@@ -20,6 +20,14 @@ CORS(app)
 def main():
     return render_template('index.html')
 
+@app.route('/api/users', methods=['GET'])
+def get_users():
+    users = User.query.all()
+    users = list(map(lambda user: user.serialize(), users))
+
+    return jsonify(users), 200
+
+
 
 if __name__=='__main__':
-    app.run() 
+    app.run()  
