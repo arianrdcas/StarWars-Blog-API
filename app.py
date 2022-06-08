@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from flask_migrate import Migrate
 from flask_cors import CORS
-from models import db, User
+from models import db, User, Personaje, Planeta, Nave
 
 app = Flask(__name__)
 
@@ -23,6 +23,13 @@ def main():
 @app.route('/api/users', methods=['GET'])
 def get_users():
     users = User.query.all()
+    users = list(map(lambda user: user.serialize(), users))
+
+    return jsonify(users), 200
+
+@app.route('/api/users/<int:id>', methods=['GET'])
+def get_user(id):
+    users = User.query.filter_by(id = iduser)
     users = list(map(lambda user: user.serialize(), users))
 
     return jsonify(users), 200
