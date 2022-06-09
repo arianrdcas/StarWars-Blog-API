@@ -70,7 +70,7 @@ class Favorite(db.Model):
 
 class Personaje(db.Model):
     __tablename__='personaje'
-    id = db.Column(db.Integer,primary_key=True)
+    idpersonaje = db.Column(db.Integer,primary_key=True)
     name=db.Column(db.String(50))
     height= db.Column(db.Integer)
     mass = db.Column(db.Integer)
@@ -82,7 +82,7 @@ class Personaje(db.Model):
 
     def serialize(self):
         return{
-            "id": self.id,
+            "id": self.idpersonaje,
             "name": self.name,
             "height": self.height,
             "mass": self.mass,
@@ -105,8 +105,8 @@ class Personaje(db.Model):
         db.session.commit()
 
 class Planeta(db.Model):
-    __tablename__='planetas'
-    id = db.Column(db.Integer,primary_key=True)
+    __tablename__='planeta'
+    idplaneta = db.Column(db.Integer,primary_key=True)
     name = db.Column(db.String(50))
     diameter = db.Column(db.Integer)
     rotation_period = db.Column(db.Integer)
@@ -117,7 +117,7 @@ class Planeta(db.Model):
 
     def serialize(self):
         return {
-            "id":self.id,
+            "id":self.idplaneta,
             "name":self.name,
             "diameter":self.diameter,
             "rotation_period":self.rotation_period,
@@ -136,11 +136,11 @@ class Planeta(db.Model):
     
     def delete(self):
         db.session.delete(self)
-        db.session.commit
+        db.session.commit()
 
 class Nave(db.Model):
     __tablename__='naves'
-    id = db.Column(db.Integer, primary_key=True)
+    idnave = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     model = db.Column(db.String(50))
     vehicle_class = db.Column(db.String(50))
@@ -149,7 +149,7 @@ class Nave(db.Model):
 
     def serialize(self):
         return {
-            "id":self.id,
+            "id":self.idnave,
             "name":self.name,
             "model":self.model,
             "vehicle_class":self.vehicle_class,

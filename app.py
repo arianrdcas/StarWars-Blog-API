@@ -20,6 +20,9 @@ CORS(app)
 def main():
     return render_template('index.html')
 
+
+"""----RUTAS DE USUARIOS-----"""
+
 @app.route('/api/users', methods=['GET'])
 def get_users():
     users = User.query.all()
@@ -30,7 +33,7 @@ def get_users():
 @app.route('/api/users/<int:id>', methods=['GET'])
 def get_user(id):
     users = User.query.filter_by(id = iduser)
-    users = list(map(lambda user: user.serialize(), users))
+    users = list(map(lambda user: user.serialize_whit_favorite(), users))
 
     return jsonify(users), 200
 
@@ -81,6 +84,133 @@ def delete_users(id):
     user.delete()
     
     return jsonify({ "status": True, "msg": "Usuario elminado"}), 200
+
+
+"""----RUTAS DE PERSONAJES-----"""
+
+@app.route('/api/personajes', methods=['GET'])
+def get_personajes():
+    personajes = Personaje.query.all()
+    personajes = list(map(lambda personaje: personaje.serialize(), personajes))
+
+    return jsonify(personajes), 200
+
+
+@app.route('/api/personajes', methods=['POST'])
+def post_personajes():
+
+    name = request.json.get('name')
+    height = request.json.get('height')
+    mass = request.json.get('mass')
+    hair_color = request.json.get('hair_color')
+    skin_color = request.json.get('skin_color')
+    eye_color = request.json.get('eye_color')
+    birth_year = request.json.get('birth_year')
+    gender = request.json.get('gender')
+
+    personaje = Personaje()
+    personaje.name = name
+    personaje.height = height
+    personaje.mass = mass
+    personaje.hair_color = hair_color
+    personaje.skin_color = skin_color
+    personaje.eye_color = eye_color
+    personaje.birth_year = birth_year
+    personaje.gender = gender
+    
+    personaje.save()
+ 
+    return jsonify(personaje.serialize()), 201
+
+
+@app.route('/api/personajes/<int:idpersonaje>', methods=['DELETE'])
+def delete_personajes(idpersonaje):
+
+    personaje = Personaje.query.get(idpersonaje)
+    personaje.delete()
+    
+    return jsonify({ "status": True, "msg": "Personaje elminado"}), 200
+
+"""----RUTAS DE NAVES-----"""
+
+@app.route('/api/naves', methods=['GET'])
+def get_naves():
+    naves = Nave.query.all()
+    naves = list(map(lambda nave: nave.serialize(), naves))
+
+    return jsonify(naves), 200
+
+
+@app.route('/api/naves', methods=['POST'])
+def post_naves():
+
+    name = request.json.get('name')
+    model = request.json.get('model')
+    vehicle_class = request.json.get('vehicle_class')
+    cargo_capacity = request.json.get('cargo_capacity')
+    passenger = request.json.get('passenger')
+    
+
+    nave = Nave()
+    nave.name = name
+    nave.model = model
+    nave.vehicle_class = vehicle_class
+    nave.cargo_capacity = cargo_capacity
+    nave.passenger = passenger
+    
+    nave.save()
+ 
+    return jsonify(nave.serialize()), 201
+
+@app.route('/api/naves/<int:idnave>', methods=['DELETE'])
+def delete_naves(idnave):
+
+    nave = Nave.query.get(idnave)
+    nave.delete()
+    
+    return jsonify({ "status": True, "msg": "Nave elminado"}), 200
+
+"""----RUTAS DE PLANETAS-----"""
+
+@app.route('/api/planetas', methods=['GET'])
+def get_planetas():
+    planetas = Planeta.query.all()
+    planetas = list(map(lambda planeta: planeta.serialize(), planetas))
+
+    return jsonify(planetas), 200
+
+
+@app.route('/api/planetas', methods=['POST'])
+def post_planetas():
+
+    name = request.json.get('name')
+    diameter = request.json.get('diameter')
+    rotation_period = request.json.get('rotation_period')
+    orbital_period = request.json.get('orbital_period')
+    gravity = request.json.get('gravity')
+    population = request.json.get('population')
+    climate = request.json.get('climate')
+
+    planeta = Planeta()
+    planeta.name = name
+    planeta.diameter = diameter
+    planeta.rotation_period = rotation_period
+    planeta.orbital_period = orbital_period
+    planeta.gravity = gravity
+    planeta.population = population
+    planeta.climate = climate
+    
+    planeta.save()
+ 
+    return jsonify(planeta.serialize()), 201
+
+@app.route('/api/planetas/<int:idplaneta>', methods=['DELETE'])
+def delete_planetas(idplaneta):
+
+    planeta = Planeta.query.get(idplaneta)
+    planeta.delete()
+    
+    return jsonify({ "status": True, "msg": "Planeta elminado"}), 200
 
 if __name__=='__main__':
     app.run()  
