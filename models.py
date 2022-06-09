@@ -9,7 +9,7 @@ class User(db.Model):
     nameuser = db.Column(db.String(250), nullable=False)
     password = db.Column(db.String(250), nullable=False)
     emailuser = db.Column(db.String(250), nullable=False, unique=True)
-    favorites = db.relationship('Favorite', cascade="all,delete",backref="user")
+    favorites = db.relationship('Favorite', cascade="all,delete",backref="user", uselist=False)
 
     def serialize(self):
         return{
@@ -30,6 +30,8 @@ class User(db.Model):
             "favorites": self.get_favorites()
         }
 
+    def get_favorites(self):
+        return list(map(lambda favorite:favorite.serialize(),self.favorites))
 
     def save(self):
         db.session.add(self)

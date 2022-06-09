@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from flask_migrate import Migrate
 from flask_cors import CORS
-from models import db, User, Personaje, Planeta, Nave
+from models import db, User, Favorite, Personaje, Planeta, Nave
 
 app = Flask(__name__)
 
@@ -30,10 +30,12 @@ def get_users():
 
     return jsonify(users), 200
 
-@app.route('/api/users/<int:id>', methods=['GET'])
-def get_user(id):
+@app.route('/api/users/<int:iduser>', methods=['GET'])
+def get_user(iduser):
     users = User.query.filter_by(id = iduser)
     users = list(map(lambda user: user.serialize_whit_favorite(), users))
+
+    if not user: return jsonify ({ "status": False, "msg": "El usuario no existe"}), 404 
 
     return jsonify(users), 200
 
@@ -131,6 +133,59 @@ def delete_personajes(idpersonaje):
     
     return jsonify({ "status": True, "msg": "Personaje elminado"}), 200
 
+
+
+"""----RUTAS DE PLANETAS-----"""
+
+@app.route('/api/planetas', methods=['GET'])
+def get_planetasall():
+    planetas = Planeta.query.all()
+    planetas = list(map(lambda planeta: planeta.serialize(), planetas))
+
+    return jsonify(planetas), 200
+
+
+@app.route('/api/planetas/<int:idplaneta>', methods=['GET'])
+def get_planetas(idplaneta):
+    planetas = Planeta.query.filter_by(id = idplaneta)
+    planetas = list(map(lambda planeta: planeta.serialize(), planetas))
+
+    return jsonify(planetas), 200
+
+
+@app.route('/api/planetas', methods=['POST'])
+def post_planetas():
+
+    name = request.json.get('name')
+    diameter = request.json.get('diameter')
+    rotation_period = request.json.get('rotation_period')
+    orbital_period = request.json.get('orbital_period')
+    gravity = request.json.get('gravity')
+    population = request.json.get('population')
+    climate = request.json.get('climate')
+
+    planeta = Planeta()
+    planeta.name = name
+    planeta.diameter = diameter
+    planeta.rotation_period = rotation_period
+    planeta.orbital_period = orbital_period
+    planeta.gravity = gravity
+    planeta.population = population
+    planeta.climate = climate
+    
+    planeta.save()
+ 
+    return jsonify(planeta.serialize()), 201
+
+@app.route('/api/planetas/<int:idplaneta>', methods=['DELETE'])
+def delete_planetas(idplaneta):
+
+    planeta = Planeta.query.get(idplaneta)
+    planeta.delete()
+    
+    return jsonify({ "status": True, "msg": "Planeta elminado"}), 200
+
+
 """----RUTAS DE NAVES-----"""
 
 @app.route('/api/naves', methods=['GET'])
@@ -169,48 +224,6 @@ def delete_naves(idnave):
     nave.delete()
     
     return jsonify({ "status": True, "msg": "Nave elminado"}), 200
-
-"""----RUTAS DE PLANETAS-----"""
-
-@app.route('/api/planetas', methods=['GET'])
-def get_planetas():
-    planetas = Planeta.query.all()
-    planetas = list(map(lambda planeta: planeta.serialize(), planetas))
-
-    return jsonify(planetas), 200
-
-
-@app.route('/api/planetas', methods=['POST'])
-def post_planetas():
-
-    name = request.json.get('name')
-    diameter = request.json.get('diameter')
-    rotation_period = request.json.get('rotation_period')
-    orbital_period = request.json.get('orbital_period')
-    gravity = request.json.get('gravity')
-    population = request.json.get('population')
-    climate = request.json.get('climate')
-
-    planeta = Planeta()
-    planeta.name = name
-    planeta.diameter = diameter
-    planeta.rotation_period = rotation_period
-    planeta.orbital_period = orbital_period
-    planeta.gravity = gravity
-    planeta.population = population
-    planeta.climate = climate
-    
-    planeta.save()
- 
-    return jsonify(planeta.serialize()), 201
-
-@app.route('/api/planetas/<int:idplaneta>', methods=['DELETE'])
-def delete_planetas(idplaneta):
-
-    planeta = Planeta.query.get(idplaneta)
-    planeta.delete()
-    
-    return jsonify({ "status": True, "msg": "Planeta elminado"}), 200
 
 if __name__=='__main__':
     app.run()  
