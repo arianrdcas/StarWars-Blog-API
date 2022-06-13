@@ -32,10 +32,10 @@ def get_users():
 
 @app.route('/api/users/<int:iduser>', methods=['GET'])
 def get_user(iduser):
-    users = User.query.filter_by(id = iduser)
+    users = User.query.filter_by(iduser = iduser)
     users = list(map(lambda user: user.serialize_whit_favorite(), users))
 
-    if not user: return jsonify ({ "status": False, "msg": "El usuario no existe"}), 404 
+    if not iduser: return jsonify ({ "status": False, "msg": "El usuario no existe"}), 404 
 
     return jsonify(users), 200
 
@@ -98,7 +98,17 @@ def get_personajes():
     return jsonify(personajes), 200
 
 
-@app.route('/api/personajes', methods=['POST'])
+@app.route('/api/personajes/<int:idpersonaje>', methods=['GET'])
+def get_personaje(idpersonaje):
+    personajes = Personaje.query.filter_by(idpersonaje = idpersonaje)
+    personajes = list(map(lambda personaje: personaje.serialize(), personajes))
+
+    if not idpersonaje: return jsonify ({ "status": False, "msg": "El usuario no existe"}), 404 
+
+    return jsonify(personajes), 200
+
+
+@app.route('/api/personajes/', methods=['POST'])
 def post_personajes():
 
     name = request.json.get('name')
@@ -125,6 +135,32 @@ def post_personajes():
     return jsonify(personaje.serialize()), 201
 
 
+@app.route('/api/personajes/<int:idpersonaje>', methods=['PUT'])
+def put_personaje(idpersonaje):
+
+    name = request.json.get('name')
+    height = request.json.get('height')
+    mass = request.json.get('mass')
+    hair_color = request.json.get('hair_color')
+    skin_color = request.json.get('skin_color')
+    eye_color = request.json.get('eye_color')
+    birth_year = request.json.get('birth_year')
+    gender = request.json.get('gender')
+
+    personaje = Personaje.query.get(idpersonaje)
+    personaje.name = name
+    personaje.height = height
+    personaje.mass = mass
+    personaje.hair_color = hair_color
+    personaje.skin_color = skin_color
+    personaje.eye_color = eye_color
+    personaje.birth_year = birth_year
+    personaje.gender = gender
+    
+    personaje.update()
+ 
+    return jsonify(personaje.serialize()), 201
+
 @app.route('/api/personajes/<int:idpersonaje>', methods=['DELETE'])
 def delete_personajes(idpersonaje):
 
@@ -147,7 +183,7 @@ def get_planetasall():
 
 @app.route('/api/planetas/<int:idplaneta>', methods=['GET'])
 def get_planetas(idplaneta):
-    planetas = Planeta.query.filter_by(id = idplaneta)
+    planetas = Planeta.query.filter_by(idplaneta = idplaneta)
     planetas = list(map(lambda planeta: planeta.serialize(), planetas))
 
     return jsonify(planetas), 200
@@ -177,6 +213,33 @@ def post_planetas():
  
     return jsonify(planeta.serialize()), 201
 
+
+@app.route('/api/planetas/<int:idplaneta>', methods=['PUT'])
+def put_planeta(idplaneta):
+
+    name = request.json.get('name')
+    diameter = request.json.get('diameter')
+    rotation_period = request.json.get('rotation_period')
+    orbital_period = request.json.get('orbital_period')
+    gravity = request.json.get('gravity')
+    population = request.json.get('population')
+    climate = request.json.get('climate')
+    
+    planeta = Planeta.query.get(idplaneta)
+    planeta.name = name
+    planeta.diameter = diameter
+    planeta.rotation_period = rotation_period
+    planeta.orbital_period = orbital_period
+    planeta.gravity = gravity
+    planeta.population = population
+    planeta.climate = climate
+    
+    planeta.update()
+ 
+    return jsonify(planeta.serialize()), 201
+
+
+
 @app.route('/api/planetas/<int:idplaneta>', methods=['DELETE'])
 def delete_planetas(idplaneta):
 
@@ -191,6 +254,14 @@ def delete_planetas(idplaneta):
 @app.route('/api/naves', methods=['GET'])
 def get_naves():
     naves = Nave.query.all()
+    naves = list(map(lambda nave: nave.serialize(), naves))
+
+    return jsonify(naves), 200
+
+
+@app.route('/api/naves/<int:idnave>', methods=['GET'])
+def get_nave(idnave):
+    naves = Nave.query.filter_by(idnave = idnave)
     naves = list(map(lambda nave: nave.serialize(), naves))
 
     return jsonify(naves), 200
@@ -214,6 +285,28 @@ def post_naves():
     nave.passenger = passenger
     
     nave.save()
+ 
+    return jsonify(nave.serialize()), 201
+
+
+@app.route('/api/naves/<int:idnave>', methods=['PUT'])
+def put_nave(idnave):
+
+    name = request.json.get('name')
+    model = request.json.get('model')
+    vehicle_class = request.json.get('vehicle_class')
+    cargo_capacity = request.json.get('cargo_capacity')
+    passenger = request.json.get('passenger')
+    
+    
+    nave = Nave.query.get(idnave)
+    nave.name = name
+    nave.model = model
+    nave.vehicle_class = vehicle_class
+    nave.cargo_capacity = cargo_capacity
+    nave.passenger = passenger
+    
+    nave.update()
  
     return jsonify(nave.serialize()), 201
 

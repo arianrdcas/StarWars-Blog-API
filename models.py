@@ -13,7 +13,7 @@ class User(db.Model):
 
     def serialize(self):
         return{
-            "id": self.iduser,
+            "iduser": self.iduser,
             "name": self.name,
             "last_name": self.last_name,
             "nameuser": self.nameuser,
@@ -22,16 +22,16 @@ class User(db.Model):
 
     def serialize_whit_favorite(self):
         return{
-            "id": self.iduser,
+            "iduserd": self.iduser,
             "name": self.name,
             "last_name": self.last_name,
             "emailuser": self.emailuser,
             "password": self.password,
-            "favorites": self.get_favorites()
+            #"favorites": self.get_favorites()
         }
 
-    def get_favorites(self):
-        return list(map(lambda favorite:favorite.serialize(),self.favorites))
+    """ def get_favorites(self):
+        return list(map(lambda favorite:favorite.serialize(),self.favorites)) """
 
     def save(self):
         db.session.add(self)
